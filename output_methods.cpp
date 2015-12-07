@@ -45,7 +45,7 @@ void ising::output_n_E_m(int init_step, int steps, int per_step, std::string fil
 }
 
 
-void ising::output_T_E_m(int equi_step, double T_start, double T_end, double delta_T, std::string filename)
+void ising::output_T_E_m(int equi_step, int ave_step, double T_start, double T_end, double delta_T, std::string filename)
 {
 	std::ofstream FILE(filename);
 	if (FILE.is_open())
@@ -58,7 +58,17 @@ void ising::output_T_E_m(int equi_step, double T_start, double T_end, double del
 		{
 			refresh(t, J, H);
 			metropolis(equi_step);
-			FILE << t << "\t" << get_energy() << "\t" << get_m() << "\n";
+
+			double ave_energy = 0, ave_m = 0;
+			for (int count = 0; count < ave_step; count++)
+			{
+				ave_energy += get_energy();
+				ave_m += get_m();
+				metropolis(100);
+			}
+			ave_energy = ave_energy / ave_step;
+			ave_m = ave_m / ave_step;
+			FILE << t << "\t" << ave_energy << "\t" << ave_m << "\n";
 			std::cout << "\r\t" << (t - T_start) / (T_end - T_start) * 100 << "%";
 		}
 	}

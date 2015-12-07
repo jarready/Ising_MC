@@ -53,7 +53,7 @@ public:
     //output data methods
     void output_mark_pos(std::string filename);
     void output_n_E_m(int init_step, int steps, int per_step, std::string filename);
-    void output_T_E_m(int equi_step, double T_start, double T_end, double delta_T, std::string filename);
+    void output_T_E_m(int equi_step, int ave_step, double T_start, double T_end, double delta_T, std::string filename);
 };
 
 
