@@ -120,7 +120,7 @@ E(\Sigma) = -J\sum_{i=1}^{N}\sigma_{i}\sigma_{i+1} - H\sum_{i=1}^{N}\sigma_i
 \end{equation}
 令$K\equiv J/K_{B}T, I = H/K_{B}T$,则系统的配分函数:
 \begin{equation}
-\label{equ: Z_1D_H0}
+\label{equ: Z_1D_H}
 Z = \sum_{\sigma_1,\dots,\sigma_N}e^{I\sigma_1}e^{K\sigma_1\sigma_2}e^{I\sigma_2}e^{K\sigma_2\sigma_3}\dots^{I\sigma_N}e^{K\sigma_N\sigma_1}
 = \sum_{\sigma_1,\dots,\sigma_N}V_{\sigma_1,\sigma_2}V_{\sigma_2,\sigma_3}\dot sV_{\sigma_N,\sigma_1}
 \end{equation}
@@ -149,13 +149,141 @@ $$f = \frac{F}{N} \approx -k_{B}T\ln e^K\cosh I + \sqrt{e^{2K}\sinh{I}^2+e^{-2K}
 E(\Sigma) = -J\sum_{i,j}\sigma_{i,j}(\sigma_{i-1,j}+\sigma_{i+1,j}+\sigma_{i,j-1}+\sigma_{i,j+1}) - H\sum_{i,j}\sigma_{i,j}
 \end{equation}
 
+\subsection{程序结构} % (fold)
+\label{sec:程序结构_}
+为了加强程序的模块化，编写了如下的类来进行算法实现。
+\begin{lstlisting}[language=C++]
+class ising
+{
+private:
+    struct neighbor
+    {
+        int spin;
+        int ux, uy;
+        int dx, dy;
+        int lx, ly;
+        int rx, ry;
+    } **mark;
+    int size;
+    int up_count;
+    double up_rate;
+    double T;
+    double J;
+    double H;
+    /*
+    neighbor is a struct for every lattice info storage
+    and mark is a 2 dimensional neighbor pointer
+     which contain all the map
+    size is the size of the table
+    m is the average spin
+    T is the temperature
+    h is the megnetic field
+     */
+public:
+    ising(  int size_,
+            double up_rate_,
+            double T_,
+            double J_,
+            double H_);
+    void refresh(   double T_,
+                    double J_,
+                    double H_);
+    //refresh the object's parameters  as you wish!
+    //will set all spins up
+    void reset( double T_,
+                double J_,
+                double H_);
+    //reset the object's parameters as you wish
+    //will not reset spins' direction
+
+
+    int get_size(); //size getting
+    int get_up_count(); //up_count getting
+    double get_up_rate(); //up_rate getting
+    double get_T();
+    double get_J();
+    double get_H();
+    double get_z(); //z = (exp(2J/T)−1)
+    double get_energy(); //get the energy
+    double get_m(); //get m = average(s)
+    //metropolis method
+    void metropolis(int steps);
+
+
+
+
+    //output data methods
+    void output_mark_pos(std::string filename);
+    void output_n_E_m(  int init_step,
+                        int steps,
+                        int per_step,
+                        std::string filename);
+    void output_T_E_m(  int equi_step,
+                        int ave_step,
+                        double T_start,
+                        double T_end,
+                        double delta_T,
+                        std::string filename);
+
+};
+\end{lstlisting}
+
 \subsection{模拟算法}
 \subsubsection{Metropolis}
-\cite{Metropolis_wiki}
-\cite{Metropolis:1953vj}
+Metropolis算法\cite{Metropolis_wiki}是一种Markov Chain Monte Carlo(MCMC)算法,由Metropolis等人在1953年提出\cite{Metropolis:1953vj}.
+\paragraph{细致平衡}
+由主方程\cite{Master_equ}可以的到细致平衡解:
+\begin{equation}
+\label{equ: Detaled_balance}
+\frac{P(x\rightarrow x')}{P(x'\rightarrow x)} = \frac{P(x')}{P(x)}
+\end{equation}
+\paragraph{算法导出}
+为了得到Metropolis算法,将其中的转移概率分为两个部分:提议概率$g(x\rightarrow x')$和接受概率$A(x\rightarrow x')$.
+$$P(x\rightarrow x') = g(x\rightarrow x')A(x\rightarrow x')$$
+进而:
+$$
+\frac{A(x\rightarrow x')}{A(x'\rightarrow x)} = \frac{P(x')}{P(x)}\frac{g(x'\rightarrow x)}{g(x\rightarrow x')}
+$$
+选择满足上述条件的接受概率,便可满足细致平衡条件,而Metropolis算法为:
+\begin{equation}
+\label{equ: Metropolis}
+A(x\rightarrow x') = \min\left(1,\frac{P(x')}{P(x)}\frac{g(x'\rightarrow x)}{g(x\rightarrow x')}\right)
+\end{equation}
+
+\paragraph{具体算法}
+在本次的模拟中,具体采用的算法是.
+\begin{enumerate}
+    \item 以均匀分布随机选取一个晶格点,计算它的局域能量$E_{old}$
+    \item 反转它,计算新的局域能量$E_{new}$
+    \item 以概率$\min(1,e^{-(E_{new}-E_{old})/k_{B}T})$接受新的状态
+    \item 重复上述步骤
+\end{enumerate}
+
 \subsubsection{Swendsen-Wang}
-\cite{Swendsen:1987eq}
+Swendsen-Wang方法是处理临界慢化问题的一种加速方法,整个系统被分为一系列的团簇集团,每个团簇集团再被随机的赋予新的自旋值.由Swendsen和Wang于1987年提出\cite{Swendsen:1987eq},具体的团簇产生由逾渗模型中的Hoshen-Kopelman的逾渗集团标记法\cite{Hoshen:1976vg}产生.
+
+\paragraph{具体算法}
+\begin{enumerate}
+    \item 产生初始自旋构型(比如可以先由Metropolis法热化)
+    \item 进行自旋键逾渗变换
+    \item 由Hoshen-Kopelman的逾渗集团标记法将所有联键的集团逐一标识
+    \item 对每个集团分别产生(+1,-1)的随机整数,赋予该集团中所有的晶格点该自旋值.
+    \item 重复2至4步
+\end{enumerate}
+
 \subsubsection{Worff}
+Worff算法也是一种集团算法,由Worff于1989年提出\cite{Wolff:1988uh}.与Swendsen-wang
+算法所不同的是,Worff算法一次只反转一个集团,并且集团的产生并不是连接所有的键逾渗中的联键集团.\cite{Krauth:2003ts}
+
+\paragraph{具体算法}
+\begin{enumerate}
+    \item 选取一个随机晶格点i,将其放入集团标记数组C
+    \item 遍历所有未遍历过的C中晶格点的邻居晶格点j,
+    \item 如果\sigma_{j} = \sigma_{i}, 则以$p=1-\exp(-2J/k_{B}T)$的概率接受它加入C(若拒绝了之后便不会再遍历到)
+    \item 当C中晶格点的邻居中没有未遍历过的了,C中所有的自旋反向.
+    \item 重复上述步骤
+\end{enumerate}
+
 \subsubsection{Worm}
 
 
@@ -166,8 +294,10 @@ E(\Sigma) = -J\sum_{i,j}\sigma_{i,j}(\sigma_{i-1,j}+\sigma_{i+1,j}+\sigma_{i,j-1
 
 \renewcommand\refname{参考文献}
 \begin{thebibliography}{99}
+
     \bibitem{Ising_wiki}
         https://en.wikipedia.org/wiki/Ising\_model
+
     \bibitem{热统汪志诚}
         汪志诚. 热力学·统计物理[M]// 高等教育出版社, 2008.第九章 9.5
 
@@ -177,8 +307,20 @@ E(\Sigma) = -J\sum_{i,j}\sigma_{i,j}(\sigma_{i-1,j}+\sigma_{i+1,j}+\sigma_{i,j-1
     \bibitem{Metropolis:1953vj}
         Metropolis, N., Rosenbluth, A. W., Rosenbluth, M. N., Teller, A. H. \& Teller, E. Equation of State Calculations by Fast Computing Machines. The Journal of Chemical Physics 21, 1087–1092 (1953).
 
+    \bibitem{Master_equ}
+        https://en.wikipedia.org/wiki/Master\_equation
+
     \bibitem{Swendsen:1987eq}
         Swendsen, R. H. \& Wang, J.-S. Nonuniversal critical dynamics in Monte Carlo simulations. Phys. Rev. Lett. 58, 86–88 (1987).
+
+    \bibitem{Hoshen:1976vg}
+        Percolation and cluster distribution. I. Cluster multiple labeling technique and critical concentration algorithm. (1976).
+
+    \bibitem{Wolff:1988uh}
+        Ulli Wolff. Collective Monte Carlo Updating for Spin Systems. 62, 361–364. 15 p (1989).
+
+    \bibitem{Krauth:2003ts}
+        Krauth, W. Cluster Monte Carlo algorithms. arXiv cond-mat.stat-mech, (2003).
 
 \end{thebibliography}
 
