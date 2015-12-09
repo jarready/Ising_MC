@@ -39,15 +39,120 @@ keywordstyle= \color{ blue!70},commentstyle=\color{red!50!green!50!blue!50},
 %frame=shadowbox,
 rulesepcolor= \color{ red!20!green!20!blue!20}
 }
+\numberwithin{equation}{subsection}
+
 \maketitle
 \section{模型简介}
+对于一系列晶格点的集合S,其中每一个晶格点都有一个所有与之相邻的晶格点的集合T,并另这些晶格点形成一个d维的晶格.对于每一个晶格点$k\in S$都有一个离散参数$\sigma_k \ in (+1,-1)$,代表每一个晶格点的自旋.而所有的离散参数集合$\Sigma \equiv {\sigma_k}_{k\in S}$为体系的自旋组态.
+对于每两个相邻的晶格点$i,j \in S$,引入相互作用参数$J_{ij}$,并假设每个晶格点都和外加磁场$h_j$作用,则体系的Hamilton量可以写作:
+\begin{equation}
+\label{equ: Hamilton}
+H(\sigma) = -\sum_{\langle i,j \rangle}J_{ij}\sigma_{i}\sigma_{j}-\mu \sum_{j}h_{j}\sigma_{j}
+\end{equation}
+其中$\langle i,j \rangle$代表i和j晶格点是相邻的,在Hamilton量的计算中只对每一堆晶格点计算一次.第二项是磁场与自旋的相互作用能,$\mu$是晶格点的磁矩.
 
+Ising模型\cite{Ising_wiki}是统计力学中关于相变的较为基础的模型.它的最早的提出者是Wilhelm Lenz(1920).后来他让他的学生Ernst Ising对一维的Ising模型进行求解,但是并没有发现相变现象,因此也没有得到更多物理学家的关注.随后,Lars Onsager于1944年对二维的Ising模型进行了解析求解($H=0$的情况,$H\neq0尚无解析接$),并同时发现了二维Ising模型中的相变现象,从而引起了更多学者的关注.之后,随着Landau、Ginzburg等人的努力.人们发现了Ising模型与量子场论之间的联系,并创立了平行的统计场论.
 \section{统计分析}
+在Ising模型中,粒子数固定,粒子自旋(广义坐标)的取值范围固定,所以如果定义了温度T固定(达到热平衡)的话,那么有其组成的系综就是一个正则系综.其相空间中的概率分布为Boltzman分布:
+\begin{equation}
+\label{equ: Distribution}
+\begin{aligned}
+P_{T}(\Sigma) = \frac{e^{-H(\Sigma)/(k_{B}T)}}{Z} \\
+Z = \sum_{\Sigma}e^{-H(\Sigma)/(k_{B}T)}
+\end{aligned}
+\end{equation}
+
+因而对于任何一个可观测量$\Omega$,都可以写作:
+\begin{equation}
+\label{equ: Obseration}
+\langle \Omega \rangle = \sum_{\Sigma}\Omega(\Sigma)P_{T}(\Sigma)
+\end{equation}
+
+\subsection{关于参数的讨论}
+在Hamilton量中参数$J_{ij}$和$h_{i}$值得进一步探讨.
+$$
+\begin{cases}
+    J_{ij}>0, 称该体系为铁磁性 \\
+    J_{ij}<0, 称该体系为反铁磁性 \\
+    J_{ij}=0, 说明晶格点间无相互作用
+\end{cases}
+$$
+$$
+\begin{cases}
+    h_i>0, 则晶格点i趋于正向 \\
+    h_i<0, 则晶格点i趋于反向 \\
+    h_i=0, 则说明没有外加力长作用
+\end{cases}
+$$
+
+\subsection{模型的简化}
+常见的简化模型为:
+\begin{enumerate}
+    \item 没有外加力场作用: $H(\sigma) = -\sum_{\langle i,j \rangle}J_{ij}\sigma_{i}\sigma_{j}$
+    \item 进一步的,所有晶格相互作用是相同的: $H(\sigma) = -J\sum_{\langle i,j \rangle}\sigma_{i}\sigma_{j}$
+\end{enumerate}
+
+\subsection{一维Ising模型解析解}
+对于正则系综,体系的特征函数是Helmoholtz自由能F,达到平衡态时F取极小值.\cite{热统汪志诚}
+\begin{equation}
+\label{equ: Free_energy}
+F = -k_{B}T\ln Z
+\end{equation}
+
+\subsubsection{h=0}
+对于h=0的情况,可以在一维自由边界条件下进行求解,N个自旋排成一列,端点之间没有相互作用,此时系统的Hamilton量为:
+\begin{equation}
+\label{equ: Hamilton_1D_H0}
+E(\Sigma) = -J\sum_{i=1}^{N-1}\sigma_{i}\sigma_{i+1} = -J(\sigma_1\sigma_2+\dots+\sigma_{N-1}\sigma_N)
+\end{equation}
+令$K\equiv J/K_{B}T, \sigma_{i}'=\sigma_{i}\sigma_{i-1} (i\leq 2)$,则系统的配分函数:
+\begin{equation}
+\label{equ: Z_1D_H0}
+Z = \sum_{\sigma_1,\dots,\sigma_N}e^{K(\sigma_1\sigma_2+\dots+\sigma_{N-1}\sigma_N)} = 2\prod_{i=2}^{N}\sum_{\sigma_{i}'}e^{K\sigma_{i}'} = 2[e^{K}+e^{-K}]^{N-1}
+\end{equation}
+进而由\eqref{equ: Free_energy}式,对于$N\rightarrow \infty$每个粒子的平均自由能$f = \frac{F}{N} = -k_{B}T\ln [e^{K}+e^{-K}]$,除了$T=0,\infty$外f及其温度的高阶导数没有奇点,所以不存在相变.
+
+\subsubsection{$h\neq0$}
+对于$h\neq0$的情况,可以周期边界条件进行求解,,此时系统的Hamilton量为:
+\begin{equation}
+\label{equ: Hamilton_1D_H}
+E(\Sigma) = -J\sum_{i=1}^{N}\sigma_{i}\sigma_{i+1} - H\sum_{i=1}^{N}\sigma_i
+\end{equation}
+令$K\equiv J/K_{B}T, I = H/K_{B}T$,则系统的配分函数:
+\begin{equation}
+\label{equ: Z_1D_H0}
+Z = \sum_{\sigma_1,\dots,\sigma_N}e^{I\sigma_1}e^{K\sigma_1\sigma_2}e^{I\sigma_2}e^{K\sigma_2\sigma_3}\dots^{I\sigma_N}e^{K\sigma_N\sigma_1}
+= \sum_{\sigma_1,\dots,\sigma_N}V_{\sigma_1,\sigma_2}V_{\sigma_2,\sigma_3}\dot sV_{\sigma_N,\sigma_1}
+\end{equation}
+其中的$V_{\sigma_i,\sigma_j} = e^{\frac{I\sigma_i}{2}}e^{K\sigma_i\sigma_j}e^{\frac{I\sigma_j}{2}}$ 可以视$\sigma_i,\sigma_j$的取值视为矩阵:
+$$
+V=
+\left[
+\begin{matrix}
+    e^{K+I}&e^{-K+I} \\
+    e^{-K+I}&e^{K-I}
+\end{matrix}
+\right]
+ $$
+进而:
+$$Z = \sum_{\sigma_1,\dots,\sigma_N}\langle\sigma_1|V|\sigma_2\rangle\langle\sigma_2|V|\sigma_3\rangle\dots\langle\sigma_N|V|\sigma_1\rangle = \sum_{\sigma_1}\langle\sigma_1|V^{N}|\sigma_1\rangle = Tr V^N = \lambda_{+}^N+\lambda_{-}^N $$
+$$\lambda_{\pm} = e^K\cosh I \pm \sqrt{e^{2K}\sinh{I}^2+e^{-2K}}$$
+进而由\eqref{equ: Free_energy}式,对于$N\rightarrow \infty$每个粒子的平均自由能
+$$f = \frac{F}{N} \approx -k_{B}T\ln e^K\cosh I + \sqrt{e^{2K}\sinh{I}^2+e^{-2K}} (\lambda_{+}>\lambda_{-})$$
+同样地除了$T=0,\infty$外f及其温度的高阶导数没有奇点,所以不存在相变.
 
 \section{模拟分析}
+下面对二维的Ising模型进行模拟计算:
+所采用的Hamilton量
+\begin{equation}
+\label{equ: Hamilton_2D}
+E(\Sigma) = -J\sum_{i,j}\sigma_{i,j}(\sigma_{i-1,j}+\sigma_{i+1,j}+\sigma_{i,j-1}+\sigma_{i,j+1}) - H\sum_{i,j}\sigma_{i,j}
+\end{equation}
 
 \subsection{模拟算法}
 \subsubsection{Metropolis}
+\cite{Metropolis_wiki}
+\cite{Metropolis:1953vj}
 \subsubsection{Swendsen-Wang}
 \cite{Swendsen:1987eq}
 \subsubsection{Worff}
@@ -61,6 +166,17 @@ rulesepcolor= \color{ red!20!green!20!blue!20}
 
 \renewcommand\refname{参考文献}
 \begin{thebibliography}{99}
+    \bibitem{Ising_wiki}
+        https://en.wikipedia.org/wiki/Ising\_model
+    \bibitem{热统汪志诚}
+        汪志诚. 热力学·统计物理[M]// 高等教育出版社, 2008.第九章 9.5
+
+    \bibitem{Metropolis_wiki}
+        https://en.wikipedia.org/wiki/Metropolis–Hastings\_algorithm\#cite\_note-Metropolis-1
+
+    \bibitem{Metropolis:1953vj}
+        Metropolis, N., Rosenbluth, A. W., Rosenbluth, M. N., Teller, A. H. \& Teller, E. Equation of State Calculations by Fast Computing Machines. The Journal of Chemical Physics 21, 1087–1092 (1953).
+
     \bibitem{Swendsen:1987eq}
         Swendsen, R. H. \& Wang, J.-S. Nonuniversal critical dynamics in Monte Carlo simulations. Phys. Rev. Lett. 58, 86–88 (1987).
 
