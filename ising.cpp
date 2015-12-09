@@ -70,6 +70,14 @@ void ising::refresh(double T_, double J_, double H_)
 
 }
 
+void reset(double T_, double J_, double H_)
+{
+    T = T_;
+    J = J_;
+    H = H_;
+}
+
+
 int ising::get_size()
 {
     return size;
@@ -120,6 +128,7 @@ double ising::get_energy()
         }
     }
     energy = energy / 4;
+    energy = energy / (size * size);
     return energy;
 }
 

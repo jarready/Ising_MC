@@ -34,6 +34,10 @@ public:
     void refresh(double T_, double J_, double H_);
     //refresh the object's parameters  as you wish!
     //will set all spins up
+    void reset(double T_, double J_, double H_);
+    //reset the object's parameters as you wish
+    //will not reset spins' direction
+
 
     int get_size(); //size getting
     int get_up_count(); //up_count getting
@@ -54,6 +58,7 @@ public:
     void output_mark_pos(std::string filename);
     void output_n_E_m(int init_step, int steps, int per_step, std::string filename);
     void output_T_E_m(int equi_step, int ave_step, double T_start, double T_end, double delta_T, std::string filename);
+
 };
 
 
