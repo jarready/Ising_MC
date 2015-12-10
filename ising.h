@@ -23,18 +23,27 @@ private:
     double H;
     /*
     neighbor is a struct for every lattice info storage
-    and mark is a 2 dimensional neighbor pointer which contain all the map
+    and mark is a 2 dimensional neighbor pointer
+     which contain all the map
     size is the size of the table
     m is the average spin
     T is the temperature
     h is the megnetic field
      */
 public:
-    ising(int size_, double up_rate_, double T_, double J_, double H_);
-    void refresh(double T_, double J_, double H_);
+    ising(  int size_,
+            double up_rate_,
+            double T_,
+            double J_,
+            double H_);
+    void refresh(   double T_,
+                    double J_,
+                    double H_);
     //refresh the object's parameters  as you wish!
     //will set all spins up
-    void reset(double T_, double J_, double H_);
+    void reset( double T_,
+                double J_,
+                double H_);
     //reset the object's parameters as you wish
     //will not reset spins' direction
 
@@ -48,18 +57,52 @@ public:
     double get_z(); //z = (exp(2J/T)−1)
     double get_energy(); //get the energy
     double get_m(); //get m = average(s)
-    //metropolis method
-    void metropolis(int steps);
 
+    //Algorithms
+    void metropolis(int steps);
+    void swendsen_wang(int steps);
+    void wolff(int steps);
+    void worm(int steps);
 
 
 
     //output data methods
     void output_mark_pos(std::string filename);
-    void output_n_E_m(int init_step, int steps, int per_step, std::string filename);
-    void output_T_E_m(int equi_step, int ave_step, double T_start, double T_end, double delta_T, std::string filename);
+    void output_n_E_m(  int init_step,
+                        int steps,
+                        int per_step,
+                        std::string filename);
+    void output_T_E_C_m(int equi_step,
+                        int ave_step,
+                        int step_per_ave,
+                        double T_start,
+                        double T_end,
+                        double delta_T,
+                        std::string filename);
+    void output_H_E_C_m(int equi_step,
+                        int ave_step,
+                        int step_per_ave,
+                        double H_start,
+                        double H_end,
+                        double delta_H,
+                        std::string filename);
 
+    void output_T_H_E_C_m(int equi_step,
+                          int ave_step,
+                          int step_per_ave,
+                          double T_start,
+                          double T_end,
+                          double delta_T,
+                          double H_start,
+                          double H_end,
+                          double delta_H,
+                          std::string filename);
+    void output_H_loop_E_C_m(int equi_step,
+                             int ave_step,
+                             int step_per_ave,
+                             double H_start,
+                             double H_end,
+                             double delta_H,
+                             std::string filename);
 };
-
-
 #endif

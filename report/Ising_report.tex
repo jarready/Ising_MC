@@ -24,6 +24,7 @@
 \usepackage{cases}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{float}
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{cite}
@@ -206,9 +207,12 @@ public:
     double get_z(); //z = (exp(2J/T)−1)
     double get_energy(); //get the energy
     double get_m(); //get m = average(s)
-    //metropolis method
-    void metropolis(int steps);
 
+    //Algorithms
+    void metropolis(int steps);
+    void swendsen_wang(int steps);
+    void wolff(int steps);
+    void worm(int steps);
 
 
 
@@ -218,27 +222,54 @@ public:
                         int steps,
                         int per_step,
                         std::string filename);
-    void output_T_E_m(  int equi_step,
+    void output_T_E_C_m(int equi_step,
                         int ave_step,
+                        int step_per_ave,
                         double T_start,
                         double T_end,
                         double delta_T,
                         std::string filename);
+    void output_H_E_C_m(int equi_step,
+                        int ave_step,
+                        int step_per_ave,
+                        double H_start,
+                        double H_end,
+                        double delta_H,
+                        std::string filename);
 
+    void output_T_H_E_C_m(int equi_step,
+                          int ave_step,
+                          int step_per_ave,
+                          double T_start,
+                          double T_end,
+                          double delta_T,
+                          double H_start,
+                          double H_end,
+                          double delta_H,
+                          std::string filename);
+    void output_H_loop_E_C_m(int equi_step,
+                             int ave_step,
+                             int step_per_ave,
+                             double H_start,
+                             double H_end,
+                             double delta_H,
+                             std::string filename);
 };
 \end{lstlisting}
 
 \subsection{模拟算法}
-\subsubsection{Metropolis}
-Metropolis算法\cite{Metropolis_wiki}是一种Markov Chain Monte Carlo(MCMC)算法,由Metropolis等人在1953年提出\cite{Metropolis:1953vj}.
 \paragraph{细致平衡}
 由主方程\cite{Master_equ}可以的到细致平衡解:
 \begin{equation}
 \label{equ: Detaled_balance}
 \frac{P(x\rightarrow x')}{P(x'\rightarrow x)} = \frac{P(x')}{P(x)}
 \end{equation}
+
+\subsubsection{Metropolis}
+Metropolis算法\cite{Metropolis_wiki}是一种Markov Chain Monte Carlo(MCMC)算法,由Metropolis等人在1953年提出\cite{Metropolis:1953vj}.
+
 \paragraph{算法导出}
-为了得到Metropolis算法,将其中的转移概率分为两个部分:提议概率$g(x\rightarrow x')$和接受概率$A(x\rightarrow x')$.
+为了得到Metropolis算法,将细致平衡中的转移概率分为两个部分:提议概率$g(x\rightarrow x')$和接受概率$A(x\rightarrow x')$.
 $$P(x\rightarrow x') = g(x\rightarrow x')A(x\rightarrow x')$$
 进而:
 $$
@@ -279,19 +310,154 @@ Worff算法也是一种集团算法,由Worff于1989年提出\cite{Wolff:1988uh}.
 \begin{enumerate}
     \item 选取一个随机晶格点i,将其放入集团标记数组C
     \item 遍历所有未遍历过的C中晶格点的邻居晶格点j,
-    \item 如果\sigma_{j} = \sigma_{i}, 则以$p=1-\exp(-2J/k_{B}T)$的概率接受它加入C(若拒绝了之后便不会再遍历到)
+    \item 如果$\sigma_{j} = \sigma_{i}$, 则以$p=1-\exp(-2J/k_{B}T)$的概率接受它加入C(若拒绝了之后便不会再遍历到)
     \item 当C中晶格点的邻居中没有未遍历过的了,C中所有的自旋反向.
     \item 重复上述步骤
 \end{enumerate}
 
-\subsubsection{Worm}
+\subsection{模拟分析}
+不同温度下,由于涨落的不同,从而构成平衡态的状态大不相同.
+
+\paragraph{可以看到不同温度下平均磁矩m随演化步数的变化}
+\begin{figure}[hbt]
+    \caption{m随演化步数的变化}
+    \setcounter{subfigure}{0}
+    \begin{center}
+        \subfigure[T=1.50,J=1,H=0]{\includegraphics[width = 5cm]{n_m_16_T1.5_J1_H0.png}}
+        \subfigure[T=2.25,J=1,H=0]{\includegraphics[width = 5cm]{n_m_16_T2.25_J1_H0.png}}
+        \subfigure[T=4,J=1,H=0]{\includegraphics[width = 5cm]{n_m_16_T4_J1_H0.png}}
+
+    \end{center}
+\end{figure}
+
+\clearpage
+\paragraph{演化了1e8步后体系稳态状态}
+\begin{figure}[hbt]
+    \caption{体系稳态状态}
+    \setcounter{subfigure}{0}
+    \begin{center}
+        \subfigure[T=1.50,J=1,H=0]{\includegraphics[width = 5cm]{mark_pos_128_T1.5_J1_H0.png}}
+        \subfigure[T=2.25,J=1,H=0]{\includegraphics[width = 5cm]{mark_pos_128_T2.25_J1_H0.png}}
+        \subfigure[T=4,J=1,H=0]{\includegraphics[width = 5cm]{mark_pos_128_T4_J1_H0.png}}
+    \end{center}
+\end{figure}
 
 
-\subsection{二级相变}
+\paragraph{而平均自旋m关于参数(H,T)的变化($Size = 64\time64$)}
 
-\subsection{一级相变}
+\begin{figure}[hbt]
+    \caption{m关于(H,T)变化}
+    \setcounter{subfigure}{0}
+    \begin{center}
+        \subfigure[H\_T\_m]{\includegraphics[width = 7cm]{H_T_m_fig.png}}
+        \subfigure[H\_T\_E]{\includegraphics[width = 7cm]{H_T_E_fig.png}}
+    \end{center}
+\end{figure}
+可以看到,在T较小(<$T_c$)的部分,m随H的变化出现了断裂,也就是说存在一级相变,而在较大的T出,都是连续的,所以是存在二级相变.E页同样出项了断裂.
 
 
+\subsubsection{二级相变}
+随着温度的改变,观察平衡态统计量的变化(E:平均能量,C:比热,平均自旋),模拟的大小为$128\times128$.
+
+\paragraph{H=0时,随温度的变化}
+\begin{figure}[hbt]
+    \caption{H=0,随温度变化}
+    \setcounter{subfigure}{0}
+    \begin{center}
+        \subfigure[T\_E,J=1,H=0]{\includegraphics[width = 5cm]{T_E_128_J1_H0.png}}
+        \subfigure[T\_C,J=1,H=0]{\includegraphics[width = 5cm]{T_C_128_J1_H0.png}}
+        \subfigure[T\_m,J=1,H=0]{\includegraphics[width = 5cm]{T_m_128_J1_H0.png}}
+    \end{center}
+\end{figure}
+
+\paragraph{$T>T_c$时,随磁场的变化}
+\begin{figure}[hbt]
+    \caption{$T>T_c$,随磁场变化}
+    \setcounter{subfigure}{0}
+    \begin{center}
+        \subfigure[H\_E,T=4,J=1]{\includegraphics[width = 5cm]{H_E_128_T4_J1.png}}
+        \subfigure[H\_C,T=4,J=1]{\includegraphics[width = 5cm]{H_C_128_T4_J1.png}}
+        \subfigure[H\_m,T=4,J=1]{\includegraphics[width = 5cm]{H_m_128_T4_J1.png}}
+    \end{center}
+\end{figure}
+
+\clearpage
+\subsubsection{一级相变}
+随着温度的降低,以及磁场的改变,体系将出项一级相变:
+\paragraph{改变磁场,m随T的变化趋势改变}
+
+\begin{figure}[hbt]
+    \caption{m\_T趋势随磁场变化}
+    \setcounter{subfigure}{0}
+    \begin{center}
+        \subfigure[J=1,H=-0.5]{\includegraphics[width = 5cm]{T_m_128_J1_H-0.5.png}}
+        \subfigure[J=1,H=0]{\includegraphics[width = 5cm]{T_m_128_J1_H0.png}}
+        \subfigure[J=1,H=0.5]{\includegraphics[width = 5cm]{T_m_128_J1_H0.5.png}}
+    \end{center}
+\end{figure}
+
+\paragraph{改变磁场,E随T的变化趋势改变}
+
+\begin{figure}[hbt]
+    \caption{E\_T趋势随磁场变化}
+    \setcounter{subfigure}{0}
+    \begin{center}
+        \subfigure[J=1,H=-0.5]{\includegraphics[width = 5cm]{T_E_128_J1_H-0.5.png}}
+        \subfigure[J=1,H=0]{\includegraphics[width = 5cm]{T_E_128_J1_H0.png}}
+        \subfigure[J=1,H=0.5]{\includegraphics[width = 5cm]{T_E_128_J1_H0.5.png}}
+    \end{center}
+\end{figure}
+
+\clearpage
+\paragraph{改变温度,m随H的变化趋势改变}
+\begin{figure}[hbt]
+    \caption{m\_H趋势随温度变化}
+    \setcounter{subfigure}{0}
+    \begin{center}
+        \subfigure[T=1,J=1]{\includegraphics[width = 5cm]{H_m_128_T1_J1.png}}
+        \subfigure[T=2.25,J=1]{\includegraphics[width = 5cm]{H_m_128_T2.25_J1.png}}
+        \subfigure[T=4,J=1]{\includegraphics[width = 5cm]{H_m_128_T4_J1.png}}
+    \end{center}
+\end{figure}
+
+\paragraph{改变温度,E随H的变化趋势改变}
+\begin{figure}[hbt]
+    \caption{E\_H趋势随磁场变化}
+    \setcounter{subfigure}{0}
+    \begin{center}
+        \subfigure[T=1,J=1]{\includegraphics[width = 5cm]{H_E_128_T1_J1.png}}
+        \subfigure[T=2.25,J=1]{\includegraphics[width = 5cm]{H_E_128_T2.25_J1.png}}
+        \subfigure[T=4,J=1]{\includegraphics[width = 5cm]{H_E_128_T4_J1.png}}
+    \end{center}
+\end{figure}
+
+\clearpage
+\subsubsection{磁滞回线}
+当对磁场H为一级相变时,演增大和减小磁场的方向改变磁场:
+\begin{figure}[hbt]
+    \caption{磁滞回线}
+    \begin{center}
+        \subfigure[T=1,J=1]{\includegraphics[width = 5cm]{Loop_H_m_128_T1_J1.png}}
+        \subfigure[T=2.25,J=1]{\includegraphics[width = 5cm]{Loop_H_m_128_T2.25_J1.png}}
+        \subfigure[T=4,J=1]{\includegraphics[width = 5cm]{Loop_H_m_128_T4_J1.png}}
+    \end{center}
+\end{figure}
+不难发现,磁滞回线随着温度的增高逐渐消失,这是因为在模拟中自旋反转的机率正比于$\exp(-\Delta E/k_{B}T)$,T越小,该机率越小,系统处于亚稳态的惯性越强,故更倾向于留在原来态.这样从正反方向演化,也就出现了相变点的不同,进而产生了磁滞回线.
+
+\section{总结}
+概要的介绍了Ising模型,并用Monte Carlo方法对二维Ising模型进行了模拟,讨论了稳态组态,一级相变,二级相变等若干问题.
+Ising模型是统计物理中同时具备了:表述简单,内涵丰富,应该广泛三种有点.
+其扩展模型有:
+\begin{enumerate}
+    \item XY模型: 自旋可以在平面中任意取向.
+    \item Heisenberg模型: 自旋在三维空间中任意去向.
+    \item Potts模型:自旋不再是$\pm1$而是可以取q个离散状态.
+    \item 时钟模型: 二维中间中q个离散取向(XY模型+Potts模型)
+    \item Ising自旋玻璃: Ising模型中$J_{ij}$取满足Gauss分布的随机变量.
+\end{enumerate}
+相关的应用也有很多,比如磁化模拟,投票模型,神经网络模型等.
+
+\clearpage
 \renewcommand\refname{参考文献}
 \begin{thebibliography}{99}
 

@@ -3,7 +3,11 @@
 #include <random>
 #include "ising.h"
 
-ising::ising(int size_, double up_rate_, double T_, double J_, double H_)
+ising::ising(int size_,
+             double up_rate_,
+             double T_,
+             double J_,
+             double H_)
 {
     size = size_;
     up_rate = up_rate_;
@@ -51,7 +55,7 @@ ising::ising(int size_, double up_rate_, double T_, double J_, double H_)
         }
     }//set up spin with up_rate;
 
-    std::cout << "end of init" << std::endl;
+    //std::cout << "end of init" << std::endl;
 }//End of init
 
 
@@ -70,7 +74,7 @@ void ising::refresh(double T_, double J_, double H_)
 
 }
 
-void reset(double T_, double J_, double H_)
+void ising::reset(double T_, double J_, double H_)
 {
     T = T_;
     J = J_;

@@ -22,15 +22,71 @@ int main()
         miao.metropolis(per_step);
     }
     */
+    /*
+    ising::ising(int size_,
+             double up_rate_,
+             double T_,
+             double J_,
+             double H_)
+     */
 
-    ising miao(128, 0, 0, 1, 0);
+    ising miao(128, 0, 4, 1, 0.5);
+    //miao.metropolis(100000000);
+    //miao.output_mark_pos("./data/gif_dat/mark_pos_metropolis.dat");
+
     //void output_E_m(int init_step; int steps, int per_step, std::string filename);
-    //miao.output_n_E_m(0, 1000000, 100, "/Users/Jarready/Desktop/Ising_MC/data/n_E_m_metropolis.dat");
 
-    //void output_T_E_m(int equi_step, int ave_step,  double T_start, double T_end, double delta_T, std::string filename);
-    miao.output_T_E_m(500000, 1000, 0, 4, 0.01, "/Users/Jarready/Desktop/Ising_MC/data/T_E_m_metropolis.dat");
+    /*
+    miao.output_n_E_m(0,
+                      40000,
+                      10,
+                      "./data/n_E_m_metropolis.dat");
+    */
+    /*
+    void ising::output_T_E_C_m(int equi_step,
+                               int ave_step,
+                               int step_per_ave,
+                               double T_start,
+                               double T_end,
+                               double delta_T,
+                               std::string filename)
+    */
+
+    /*
+    miao.output_T_H_E_C_m(10000,
+                          1000,
+                          1000,
+                          0.5,
+                          5,
+                          0.1,
+                          - 5,
+                          5,
+                          0.2,
+                          "./data/T_H_E_C_m_metropolis.dat");
+    */
+    /*
+    miao.output_T_E_C_m(500000,
+                        1000,
+                        10000,
+                        0.1, 4, 0.1,
+                        "./data/T_E_C_m_metropolis.dat");
+    */
+
+    /*
+    miao.output_H_E_C_m(500000,
+                        1000,
+                        10000,
+                        -10, 10, 0.5,
+                        "./data/H_E_C_m_metropolis.dat");
+    */
+    miao.output_H_loop_E_C_m(500000,
+                             1000,
+                             10000,
+                             -10, 10, 0.5,
+                             "./data/Loop_H_E_C_m_metropolis.dat");
+
 
     std::clock_t c_end = std::clock();
-    std::cout << "\nused " << (c_end - c_start) / CLOCKS_PER_SEC << " seconds";
+    std::cout << "\n used " << (c_end - c_start) / CLOCKS_PER_SEC << " seconds";
     return 0;
 }
