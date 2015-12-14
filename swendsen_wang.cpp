@@ -1,7 +1,7 @@
 #include "ising.h"
 #include <iostream>
 #include <random>
-#include <cstring>
+#include <string>
 #include <cmath>
 
 void ising::swendsen_wang(int steps)

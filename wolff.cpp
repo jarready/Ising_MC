@@ -1,8 +1,9 @@
 #include "ising.h"
 #include <iostream>
 #include <random>
-#include <cstring>
+#include <string>
 #include <cmath>
+#include <set>
 void ising::wolff(int steps)
 {
     std::random_device rd;
@@ -14,38 +15,60 @@ void ising::wolff(int steps)
     std::uniform_real_distribution<> dis_flip(0, 1);
 
     double p = 1 - std::exp(-2 * J / T);
-    int x, y;  //pos
+    int *pos;  //pos
+    int *u_nei, *d_nei, *l_nei, *r_nei; //neighbors store
+    std::set<int*> C, F_old, F_new;
 
-
-    /*
-        struct chain  //set of mark points,
+    for (int step = 0; step < steps; step++)//evolve steps times
+    {
+        pos = new int[2];
+        pos[0] = dis_pos(); pos[1] = dis_pos();
+        C.insert(pos); F_old.insert(pos);
+        while (!F_old.empty())
         {
-            int pos[2];
-            chain* next = NULL;
-        } *C, *C_tail, *F_old, *F_old_tail, *F_new, *F_new_tail;
-        C = new chain[1]; F_old = new chain[1];
-        //C is the set of points to flip
-        //F_old, F_new is for adding new points use
-        for (int i = 0; i < steps; i++)
-        {
-            x = dis_pos(gen);
-            y = dis_pos(gen);
-            C = C_tail = new chain[1]; F_old = F_old_tail = new chain[1];
-            C->pos[0] = x; C->pos[1] = y; C - next = NULL;
-            F_old->pos[0] = x; F_old->pos[1] = y; F_old->next = NULL;
-            while (F_old)
+            F_new.clear();
+            u_nei = new int[2]; d_nei = new int[2]; l_nei = new int[2]; r_nei = new int[2];
+            for (std::set<int*>::iterator it = F_old.begin(); it != F_old.end(); it++)
             {
-                F_new = F_new_tail = NULL;
-                for (chain * miao = F_old; miao; miao = miao->next;)
+                u_nei[0] = mark[(*it)[0]][(*it)[1]].ux; u_nei[1] = mark[(*it)[0]][(*it)[1]].uy;
+                d_nei[0] = mark[(*it)[0]][(*it)[1]].dx; d_nei[1] = mark[(*it)[0]][(*it)[1]].dy;
+                l_nei[0] = mark[(*it)[0]][(*it)[1]].lx; l_nei[1] = mark[(*it)[0]][(*it)[1]].ly;
+                r_nei[0] = mark[(*it)[0]][(*it)[1]].rx; r_nei[1] = mark[(*it)[0]][(*it)[1]].ry;
+
+                if (mark[u_nei[0]][u_nei[1]].spin == mark[(*it)[0]][(*it)[1]].spin   && C.find(u_nei) != C.end() && dis_flip(gen) < p)
                 {
-                    if ( (mark[mark[miao->pos[0]][miao->pos[1]].ux][mark[miao->pos[0]][miao->pos[1]].uy].spin == mark[miao->pos[0]][miao->pos[1]].spin) && dis_flip(gen) < p)
-                    {
-                    }
+                    F_new.insert(u_nei);
+                    C.insert(u_nei);
+                    u_nei = new int[2];
+                    //if this neighbor is inserted,
+                    //should give set a new pointer to it
                 }
+
+                if (mark[d_nei[0]][d_nei[1]].spin == mark[(*it)[0]][(*it)[1]].spin   && C.find(d_nei) != C.end() && dis_flip(gen) < p)
+                {
+                    F_new.insert(d_nei);
+                    C.insert(d_nei);
+                    d_nei = new int[2];
+                }
+                if (mark[l_nei[0]][l_nei[1]].spin == mark[(*it)[0]][(*it)[1]].spin   && C.find(l_nei) != C.end() && dis_flip(gen) < p)
+                {
+                    F_new.insert(l_nei);
+                    C.insert(l_nei);
+                    l_nei = new int[2];
+                }
+                if (mark[r_nei[0]][r_nei[1]].spin == mark[(*it)[0]][(*it)[1]].spin   && C.find(r_nei) != C.end() && dis_flip(gen) < p)
+                {
+                    F_new.insert(r_nei);
+                    C.insert(r_nei);
+                    r_nei = new int[2];
+                }
+                //end insert neighbor
             }
-
+            F_old = F_new;
         }
-    */
-
-    //std::cout << "This is worff algorithm" << std::endl;
+        for (std::set<int*>::iterator it = C.begin(); it != C.end(); it++)
+        {
+            mark[(*it)[0]][(*it)[1]].spin = - mark[(*it)[0]][(*it)[1]].spin;
+        }
+    }
 }

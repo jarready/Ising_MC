@@ -1,7 +1,7 @@
 #include "ising.h"
 #include <iostream>
 #include <fstream>
-#include <cstring>
+#include <string>
 #include <cmath>
 
 void ising::output_mark_pos(std::string filename)

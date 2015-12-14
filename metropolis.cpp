@@ -1,7 +1,7 @@
 #include "ising.h"
 #include <iostream>
 #include <random>
-#include <cstring>
+#include <string>
 #include <cmath>
 void ising::metropolis(int steps = 1)
 {
