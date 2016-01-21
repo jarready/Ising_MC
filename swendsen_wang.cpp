@@ -3,6 +3,7 @@
 #include <random>
 #include <string>
 #include <cmath>
+#include <set>
 
 void ising::swendsen_wang(int steps)
 {

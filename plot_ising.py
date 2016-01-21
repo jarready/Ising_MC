@@ -27,16 +27,43 @@ def mark_pos(filename):
     plt.hist2d(x,y,bins = int(size))
     plt.xlim(0,int(size)-1)
     plt.ylim(0,int(size)-1)
-    plt.savefig(filename[:-15]+tail+".png")
+    #plt.savefig(filename[:-15]+tail+".png")
+    plt.savefig(filename[:-4]+".png")
     plt.close()
 
-def group_mark_pos():
+def group_mark_pos(step, per_step):
     i = 0
-    step = 100000
-    size = 128
     while i<=step:
-        mark_pos("/Users/Jarready/Desktop/Ising_MC/data/gif_dat/mark_pos_metropolis_"+str(i)+".dat",size)
-        i += 1000
+        x = []
+        y = []
+        filename = "./data/gif_dat/mark_pos_metropolis_"+str(i)+".dat"
+        with open(filename,"r") as f:
+            line = f.readline().split()
+            size = line[1]
+            line = f.readline().split()
+            T = line[1]
+            line = f.readline().split()
+            J = line[1]
+            line = f.readline().split()
+            H = line[1]
+            tail = "_"+size+"_T"+T+"_J"+J+"_H"+H
+            line = f.readline().split()
+            while line:
+                line = f.readline().split()
+                if len(line)==2:
+                    x.append(int(line[0]))
+                    y.append(int(line[1]))
+        fig = plt.figure(figsize = (5,5))
+        plt.title("mark_pos")
+        plt.xlabel("x")
+        plt.ylabel("y")
+        plt.hist2d(x,y,bins = int(size))
+        plt.xlim(0,int(size)-1)
+        plt.ylim(0,int(size)-1)
+        #plt.savefig(filename[:-15]+tail+".png")
+        plt.savefig(filename[:-4]+".png")
+        plt.close()
+        i += per_step
         if (step//i != step//(i+1)):
             print(step//i)
 
@@ -204,12 +231,12 @@ def T_H_E_C_m(filename):
 
 
 def main():
-    #group_mark_pos()
+    group_mark_pos(10000,100)
     #mark_pos("./data/gif_dat/mark_pos_metropolis.dat")
     #n_E_m("./data/n_E_m_metropolis.dat")
     #T_E_C_m("./data/T_E_C_m_metropolis.dat")
-    H_E_C_m("./data/H_E_C_m_metropolis.dat")
-    H_E_C_m("./data/Loop_H_E_C_m_metropolis.dat")
+    #H_E_C_m("./data/H_E_C_m_metropolis.dat")
+    #H_E_C_m("./data/Loop_H_E_C_m_metropolis.dat")
     #T_H_E_C_m("./data/T_H_E_C_m_metropolis.dat")
 
 if __name__ == "__main__":

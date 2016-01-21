@@ -1,5 +1,5 @@
 ising_MC: main.o  ising.o metropolis.o swendsen_wang.o wolff.o worm.o output_methods.o
-	g++ -o ising_MC main.o ising.o metropolis.o swendsen_wang.o wolff.o worm.o output_methods.o
+	g++ -o ising_MC main.o ising.o metropolis.o swendsen_wang.o wolff.o worm.o output_methods.o -g
 main.o: main.cpp ising.h
 	g++ -o main.o -c main.cpp
 ising.o: ising.cpp ising.h

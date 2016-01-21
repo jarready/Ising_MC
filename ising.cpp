@@ -33,7 +33,7 @@ ising::ising(int size_,
             mark[x][y].lx = (x - 1 + size) % size;
             mark[x][y].rx = (x + 1 + size) % size;
 
-            mark[x][y].spin = 1;
+            mark[x][y].spin = -1;
         }
     }//make neighbors right
 
