@@ -42,14 +42,16 @@ void ising::output_mark_bond(std::string filename)
         {
             for (int y = 0; y < size; y++)
             {
-               if(mark[x][y].ubond)
-               {
-                FILE<<x<<" "<<y<<"\t"<<x<<" "<<y+1<<"\n";
-               }
-               if(mark[x][y].rbond)
-               {
-                FILE<<x<<" "<<y<<"\t"<<x+1<<" "<<y<<"\n";
-               }
+
+                if(mark[x][y].ubond)
+                {
+                    FILE<< x <<" "<<y <<"\t"<<x<<" "<<y+1<<"\n";
+                }
+                if(mark[x][y].rbond)
+                {
+                    FILE<< x <<" "<<y <<"\t"<<x+1<<" "<<y<<"\n";
+                }
+
             }
         }
     }

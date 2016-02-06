@@ -74,7 +74,8 @@ public:
 
     //output data methods
     void output_mark_pos(std::string filename);
-    void output_mark_bond(std::string filename);
+
+    void output_mark_bond(std::string filename); //for worm
     void output_n_E_m(  int init_step,
                         int steps,
                         int per_step,
