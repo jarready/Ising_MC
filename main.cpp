@@ -8,19 +8,20 @@ int main()
   //ising(int size_, double up_rate_, double T_, double J_, double H_);
 
   //anamation get
-  ising miao(128, 0.2, 2.5, 1, 0);
-  miao.metropolis(10000);
+  //ising miao(128, 0.2, 2.5, 1, 0);
+  //miao.metropolis(10000);
   std::string outputfile;
 
-  int steps = 10000;
-  int per_step = 100;
+  int steps = 1000;
+  int per_step = 1;
+  ising miao(16, 0, 2.5, 1, 0);
   for (int n = 0; n <= steps; n += per_step)
   {
-    outputfile = "./data/gif_dat/mark_pos_metropolis_";
+    outputfile = "./data/gif_dat/mark_bond_";
     outputfile += std::to_string(n);
     outputfile += ".dat";
-    miao.output_mark_pos(outputfile);
-    miao.wolff(per_step);
+    miao.output_mark_bond(outputfile);
+    miao.worm(per_step);
     std::cout << n << " " << steps << std::endl;
   }
 

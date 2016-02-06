@@ -28,13 +28,13 @@ void ising::worm(int steps)
                 {
                     mark[mashax][mashay].ubond--;
                     mashay = mark[mashax][mashay].uy;
-                    mark[mashax][mashay].ubond--;
+                    mark[mashax][mashay].dbond--;
                 }
                 else if(dis_flip(gen)<pacc)
                 {
                     mark[mashax][mashay].ubond++;
                     mashay = mark[mashax][mashay].uy;
-                    mark[mashax][mashay].ubond++;
+                    mark[mashax][mashay].dbond++;
                 }
                 break;
             }
@@ -44,13 +44,13 @@ void ising::worm(int steps)
                 {
                     mark[mashax][mashay].dbond--;
                     mashay = mark[mashax][mashay].dy;
-                    mark[mashax][mashay].dbond--;
+                    mark[mashax][mashay].ubond--;
                 }
                 else if(dis_flip(gen)<pacc)
                 {
                     mark[mashax][mashay].dbond++;
                     mashay = mark[mashax][mashay].dy;
-                    mark[mashax][mashay].dbond++;
+                    mark[mashax][mashay].ubond++;
                 }
                 break;
             }
@@ -60,13 +60,13 @@ void ising::worm(int steps)
                 {
                     mark[mashax][mashay].lbond--;
                     mashax = mark[mashax][mashay].lx;
-                    mark[mashax][mashay].lbond--;
+                    mark[mashax][mashay].rbond--;
                 }
                 else if(dis_flip(gen)<pacc)
                 {
                     mark[mashax][mashay].lbond++;
                     mashax = mark[mashax][mashay].lx;
-                    mark[mashax][mashay].lbond++;
+                    mark[mashax][mashay].rbond++;
                 }
                 break;
             }
@@ -76,13 +76,13 @@ void ising::worm(int steps)
                 {
                     mark[mashax][mashay].rbond--;
                     mashax = mark[mashax][mashay].rx;
-                    mark[mashax][mashay].rbond--;
+                    mark[mashax][mashay].lbond--;
                 }
                 else if(dis_flip(gen)<pacc)
                 {
                     mark[mashax][mashay].rbond++;
                     mashax = mark[mashax][mashay].rx;
-                    mark[mashax][mashay].rbond++;
+                    mark[mashax][mashay].lbond++;
                 }
                 break;
             }
