@@ -27,18 +27,6 @@ int main()
     std::cout << n << " " << steps << std::endl;
   }
 
-  /*
->>>>>>> 2b95cb3bc88a92ede278994019885d52cb1c3cd8
-  for (int n = 0; n <= steps; n += per_step)
-  {
-    outputfile = "./data/gif_dat/mark_bond_";
-    outputfile += std::to_string(n);
-    outputfile += ".dat";
-    miao.output_mark_bond(outputfile);
-    miao.worm(per_step);
-    std::cout << n << " " << steps << std::endl;
-  }
-  */
 
   /*
   ising::ising(int size_,
