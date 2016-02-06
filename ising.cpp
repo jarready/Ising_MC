@@ -36,10 +36,10 @@ ising::ising(int size_,
             mark[x][y].spin = -1;
 
             //bond setting for worm
-            mark[x][y].ubong = 0;
-            mark[x][y].dbong = 0;
-            mark[x][y].lbong = 0;
-            mark[x][y].rbong = 0;
+            mark[x][y].ubond = 0;
+            mark[x][y].dbond = 0;
+            mark[x][y].lbond = 0;
+            mark[x][y].rbond = 0;
         }
     }//make neighbors right
         irax = iray = mashax = mashay = 0;

@@ -6,7 +6,6 @@
 
 void ising::output_mark_pos(std::string filename)
 {
-    int** pos;
     std::ofstream FILE(filename);
     if (FILE.is_open())
     {
@@ -23,6 +22,35 @@ void ising::output_mark_pos(std::string filename)
                 {
                     FILE << x << "\t" << y << "\n";
                 }
+            }
+        }
+    }
+    FILE.close();
+}
+
+void ising::output_mark_bond(std::string filename)
+{
+    std::ofstream FILE(filename);
+    if (FILE.is_open())
+    {
+        FILE << "size" << "\t" << get_size() << "\n";
+        FILE << "T" << "\t" << get_T() << "\n";
+        FILE << "J" << "\t" << get_J() << "\n";
+        FILE << "H" << "\t" << get_H() << "\n";
+        FILE << "x" << "\t" << "y" << "\n";
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                if(mark[x][y].ubond)
+                {
+                    FILE<< x <<" "<<y <<"\t"<<x<<" "<<y+1<<"\n";
+                }
+                if(mark[x][y].rbond)
+                {
+                    FILE<< x <<" "<<y <<"\t"<<x+1<<" "<<y<<"\n";
+                }
+
             }
         }
     }
