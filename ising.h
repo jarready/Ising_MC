@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <string>
-
+#include <vector>
 class ising
 {
 private:
@@ -14,7 +14,13 @@ private:
         int dx, dy;
         int lx, ly;
         int rx, ry;
+
+        //bonds for worm
+        int ubond, dbond, lbond, rbond;
     } **mark;
+    //ira masha for worm
+    int irax, iray, mashax, mashay;
+
     int size;
     int up_count;
     double up_rate;
