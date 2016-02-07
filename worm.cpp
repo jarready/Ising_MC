@@ -15,11 +15,14 @@ void ising::worm(int steps)
 
     for(int step=0;step<steps;step++)
     {
+        /*
         if(irax == mashax && iray == mashay)
         {
             irax = mashax = dis_pos(gen);
             iray = mashay = dis_pos(gen);
         }//end if
+        */
+        do{
         switch(dis_move(gen))
         {
             case 0:
@@ -88,7 +91,10 @@ void ising::worm(int steps)
             }
 
         }//end switch
-
+        }
+        while(irax != mashax || iray != mashay);
+        irax = mashax = dis_pos(gen);
+        iray = mashay = dis_pos(gen);
 
     }//end for loop
 }

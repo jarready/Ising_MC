@@ -12,14 +12,14 @@ int main()
   //miao.metropolis(10000);
   std::string outputfile;
 
-  int steps = 1000;
-  int per_step = 1;
+  int steps = 2000;
+  int per_step = 100;
 
 
-  ising miao(16, 0, 2.5, 1, 0);
+  ising miao(128, 0, 2.5, 1, 0);
   for (int n = 0; n <= steps; n += per_step)
   {
-    outputfile = "./data/gif_dat/mark_bond_";
+    outputfile = "./data/gif_dat/mark_bond_loop_";
     outputfile += std::to_string(n);
     outputfile += ".dat";
     miao.output_mark_bond(outputfile);

@@ -55,18 +55,19 @@ def mark_bond(filename):
     plt.xlabel("x")
     plt.ylabel("y")
     for i in range(len(bondx)):
-        plt.plot(bondx[i],bondy[i],"b-*")
-    plt.xlim(-1,int(size))
-    plt.ylim(-1,int(size))
+        plt.plot(bondx[i],bondy[i],"b-")
+    plt.xlim(0,int(size))
+    plt.ylim(0,int(size))
     plt.savefig(filename[:-4]+".png")
     plt.close()
 
 def group_mark_bond(step,per_step):
     i = 0
     while i<=step:
-        filename = "./data/gif_dat/mark_bond_"+str(i)+".dat"
+        filename = "./data/gif_dat/mark_bond_loop_"+str(i)+".dat"
         mark_bond(filename)
         i+=per_step
+        print(i,"--",step,"\r",)
 
 def group_mark_pos(step, per_step):
     i = 0
@@ -103,42 +104,6 @@ def group_mark_pos(step, per_step):
         i += per_step
         if (step//i != step//(i+1)):
             print(step//i)
-
-def group_mark_bond(step, per_step):
-    i = 0
-    while i<=step:
-        x = []
-        y = []
-        filename = "./data/gif_dat/mark_bond_"+str(i)+".dat"
-        with open(filename,"r") as f:
-            line = f.readline().split()
-            size = line[1]
-            line = f.readline().split()
-            T = line[1]
-            line = f.readline().split()
-            J = line[1]
-            line = f.readline().split()
-            H = line[1]
-            tail = "_"+size+"_T"+T+"_J"+J+"_H"+H
-            line = f.readline().split()
-            while line:
-                line = f.readline().split()
-                if len(line)==4:
-                    x.append((int(line[0]),int(line[2])))
-                    y.append((int(line[1]),int(line[3])))
-        fig = plt.figure(figsize = (5,5))
-        plt.title("mark_bond")
-        plt.xlabel("x")
-        plt.ylabel("y")
-        for j in range(len(x)):
-            plt.plot(x[j],y[j],"b-*")
-        plt.xlim(0,int(size))
-        plt.ylim(0,int(size))
-        #plt.savefig(filename[:-15]+tail+".png")
-        plt.savefig(filename[:-4]+".png")
-        plt.close()
-        i += per_step
-        print(i,"--",step,"\r",)
 
 def n_E_m(filename):
     n = []
@@ -304,7 +269,7 @@ def T_H_E_C_m(filename):
 
 
 def main():
-    group_mark_bond(1000,1)
+    group_mark_bond(2000,100)
     #group_mark_pos(10000,100)
     #mark_pos("./data/gif_dat/mark_pos_metropolis.dat")
     #n_E_m("./data/n_E_m_metropolis.dat")
